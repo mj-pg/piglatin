@@ -2,6 +2,7 @@ package main
 
 import "strings"
 
+// Service describes the operations supported by this pig latin translator.
 type Service interface {
 	Translate(string) (string, error)
 	List() ([][]string, error)
@@ -13,13 +14,13 @@ type service struct {
 	store Store
 }
 
-// Store saves texts and their pig latin translation.
+// Store saves texts and their pig latin translations.
 type Store interface {
 	Save(string, string) error
 	Get() ([][]string, error)
 }
 
-//Translate translates the text to pig latin and saves the translation.
+// Translate translates the text to pig latin and saves the translation.
 func (s *service) Translate(text string) (string, error) {
 	translated := translate(text)
 	// TODO: is this infinite?
@@ -29,6 +30,7 @@ func (s *service) Translate(text string) (string, error) {
 	return translated, nil
 }
 
+// List returns all the text and their pig latin translations.
 func (s *service) List() ([][]string, error) {
 	return s.store.Get()
 }
