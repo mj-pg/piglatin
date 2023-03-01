@@ -20,6 +20,12 @@ type Store interface {
 	Get() ([][]string, error)
 }
 
+func NewService(s Store) *service {
+	return &service{
+		store: s,
+	}
+}
+
 // Translate translates the text to pig latin and saves the translation.
 func (s *service) Translate(text string) (string, error) {
 	translated := translate(text)
