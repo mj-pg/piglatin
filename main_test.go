@@ -16,7 +16,7 @@ func TestTranslate(t *testing.T) {
 			want:  "oneay otway eethray ourfay",
 		},
 		{
-			input: "Hello World I'm a gopher",
+			input: "Hello World! I'm a gopher",
 			want:  "elloHay orldWay! I'may ay ophergay",
 		},
 	}

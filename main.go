@@ -7,14 +7,6 @@ import (
 
 func main() {
 	fmt.Println("vim-go")
-	Translate("adog")
-	Translate("dog")
-	Translate("bog")
-	Translate("eog")
-	Translate("iog")
-	Translate("og")
-	Translate("ulog")
-	Translate("log")
 }
 
 // Translate turns each word in the text to its pig latin version.
