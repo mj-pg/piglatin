@@ -2,32 +2,19 @@ package main
 
 import "strings"
 
-// Service describes the operations supported by this pig latin translator.
-type Service interface {
-	Translate(string) (string, error)
-	List() ([][]string, error)
-}
-
-var _ Service = &service{}
-
-type service struct {
-	store Store
-}
-
-// Store saves texts and their pig latin translations.
+// Store stores texts and their pig latin translations.
 type Store interface {
 	Save(string, string) error
 	Get() ([][]string, error)
 }
 
-func NewService(s Store) *service {
-	return &service{
-		store: s,
-	}
+// Service represents the core services supported by this pig latin translator.
+type Service struct {
+	store Store
 }
 
 // Translate translates the text to pig latin and saves the translation.
-func (s *service) Translate(text string) (string, error) {
+func (s *Service) Translate(text string) (string, error) {
 	translated := translate(text)
 	// TODO: is this infinite?
 	if err := s.store.Save(text, translated); err != nil {
@@ -37,7 +24,7 @@ func (s *service) Translate(text string) (string, error) {
 }
 
 // List returns all the text and their pig latin translations.
-func (s *service) List() ([][]string, error) {
+func (s *Service) List() ([][]string, error) {
 	return s.store.Get()
 }
 
