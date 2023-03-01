@@ -18,7 +18,7 @@ func main() {
 	// init server
 	//
 	h := &Handler{}
-	http.Handle("/piglatins", handler)
+	http.Handle("/piglatins", h)
 	err := http.ListenAndServe(fmt.Sprintf(":%d", port), nil)
 	if err != nil {
 		log.Printf("Server exited with error: %v", err)
