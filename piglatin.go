@@ -2,8 +2,39 @@ package main
 
 import "strings"
 
-// Translate turns each word in the text to its pig latin version.
-func Translate(text string) string {
+type Service interface {
+	Translate(string) (string, error)
+	List() ([][]string, error)
+}
+
+var _ Service = &service{}
+
+type service struct {
+	store Store
+}
+
+// Store saves texts and their pig latin translation.
+type Store interface {
+	Save(string, string) error
+	Get() ([][]string, error)
+}
+
+//Translate translates the text to pig latin and saves the translation.
+func (s *service) Translate(text string) (string, error) {
+	translated := translate(text)
+	// TODO: is this infinite?
+	if err := s.store.Save(text, translated); err != nil {
+		return translated, err
+	}
+	return translated, nil
+}
+
+func (s *service) List() ([][]string, error) {
+	return s.store.Get()
+}
+
+// translate turns each word in the text to its pig latin version.
+func translate(text string) string {
 	ww := strings.Fields(text)
 	res := make([]string, len(ww))
 	for i, word := range ww {

@@ -22,7 +22,7 @@ func TestTranslate(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got := Translate(tc.input)
+		got := translate(tc.input)
 		if got != tc.want {
 			t.Errorf("input: %v, want: %v, got: %v", tc.input, tc.want, got)
 		}
