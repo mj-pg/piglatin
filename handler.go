@@ -2,7 +2,9 @@ package main
 
 import "net/http"
 
-type Handler struct{}
+type Handler struct {
+	svc Service
+}
 
 // ServeHTTP routes the request based on the HTTP method.
 func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
