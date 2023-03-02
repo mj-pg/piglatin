@@ -12,12 +12,12 @@ func TestTranslate(t *testing.T) {
 
 	tests := []test{
 		{
-			input: "one two three four o'clock hasn't fr-end",
-			want:  "oneway otway eethray ourfay o'clockway asn'thay -endfray",
+			input: "one two three four o'clock hasn't fr-end 12$ 4friend",
+			want:  "oneway otway eethray ourfay o'clockway asn'thay -endfray 12$ 4iendfray",
 		},
 		{
 			input: "Hello World?! I'm a gopher 4 5yrs. My email: joe@g.com ,phone #hash",
-			want:  "elloHay orldWay?! I'mway away ophergay 4 5yrs. Myay emailway: joe@g.com ,onephay #ashhay",
+			want:  "elloHay orldWay?! I'mway away ophergay 4 5yrsay. Myay emailway: oe@g.comjay ,onephay #ashhay",
 		},
 	}
 
@@ -70,11 +70,15 @@ func TestPigLatinize(t *testing.T) {
 		},
 		{
 			input: "12yrs",
-			want:  "12yrs",
+			want:  "12yrsay",
+		},
+		{
+			input: "4ever",
+			want:  "4everay",
 		},
 		{
 			input: "front$-end",
-			want:  "front$-end",
+			want:  "ont$-endfray",
 		},
 		{
 			input: "front-end",
@@ -94,7 +98,7 @@ func TestPigLatinize(t *testing.T) {
 	}
 }
 
-func TestTrimPuncts(t *testing.T) {
+func TestTrimNonLetters(t *testing.T) {
 	type test struct {
 		input string
 		left  string
@@ -123,8 +127,8 @@ func TestTrimPuncts(t *testing.T) {
 		},
 		{
 			input: "[[100",
-			left:  "[[",
-			mid:   "100",
+			left:  "[[100",
+			mid:   "",
 			right: "",
 		},
 		{
@@ -160,7 +164,7 @@ func TestTrimPuncts(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		left, mid, right := trimPuncts(tc.input)
+		left, mid, right := trimNonLetters(tc.input)
 		if left != tc.left ||
 			mid != tc.mid ||
 			right != tc.right {

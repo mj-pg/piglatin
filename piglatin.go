@@ -25,7 +25,7 @@ type Service struct {
 // Translate translates the text to pig latin and saves the translation.
 func (s *Service) Translate(text string) (string, error) {
 
-	/* // already exists
+	/* // already exists, not required, translation is fast anyway
 	if translated, err := s.store.GetByText(text); err == nil {
 		log.Println("Got translation from storage")
 		return translated, nil
@@ -48,10 +48,10 @@ func translate(text string) string {
 	res := make([]string, len(ww))
 	for i, word := range ww {
 
-		// ignore punctuations at the ends because they may be valid
-		// e.g.  (something less important) ,comma question?
+		// ignore nonletters at the ends
+		// since they are not pig latinize
 		//
-		left, mid, right := trimPuncts(word)
+		left, mid, right := trimNonLetters(word)
 		pl := pigLatinize(mid)
 		res[i] = left + pl + right
 	}
@@ -60,8 +60,8 @@ func translate(text string) string {
 
 // pigLatinize returns the pig latin version of a word.
 func pigLatinize(word string) string {
-	if !isValid(word) {
-		return word
+	if word == "" {
+		return ""
 	}
 
 	// the rule is
@@ -83,11 +83,14 @@ func pigLatinize(word string) string {
 // splitStart splits the starting consonant/s from the rest of the word.
 func splitStart(word string) (string, string) {
 	// split at the 1st non-consonant
+	// cannot reuse isVowel() assuming there are nonletters
 	i := strings.IndexFunc(word, isNonConsonant)
+
 	// no vowels
 	if i < 0 {
 		return word, ""
 	}
+
 	return word[:i], word[i:]
 }
 
@@ -107,49 +110,37 @@ func isNonConsonant(ch rune) bool {
 	return !isConsonant
 }
 
-// isValid checks if a word is probably valid.
-// A valid word has letters, single quote and hyphen only.
-func isValid(word string) bool {
-	if word == "" {
-		return false
-	}
-	for _, ch := range word {
-		if !unicode.IsLetter(ch) &&
-			byte(ch) != '\'' &&
-			byte(ch) != '-' {
-			return false
-		}
-	}
-	return true
-}
+// trimNonLetters returns the trimmed word and the subsequent non-letter characters at the start(leftmost) and end(rightmost) of the word.
+func trimNonLetters(word string) (string, string, string) {
+	// remove nonletters at the start
+	withoutLeft := strings.TrimLeftFunc(word, isNonLetter)
 
-// trimPuncts returns the trimmed word and the subsequent punctuations at the start(leftmost) and end(rightmost) of the word.
-func trimPuncts(word string) (string, string, string) {
-	// remove punctuations at the start
-	withoutLeft := strings.TrimLeftFunc(word, unicode.IsPunct)
-
-	// word is all punctuation
+	// word is all nonletters
 	if withoutLeft == "" {
 		return word, "", ""
 	}
 
-	// remove punctuations at the end
-	mid := strings.TrimRightFunc(withoutLeft, unicode.IsPunct)
+	// remove nonletters at the end
+	mid := strings.TrimRightFunc(withoutLeft, isNonLetter)
 
-	// get starting punctuations(at the left)
+	// get starting nonletters(at the left)
 	//
 	iLeftEnd := strings.Index(word, withoutLeft)
 	left := word[:iLeftEnd]
 
-	// zero ending punctuations
+	// has no nonletters at the ends
 	if len(left)+len(mid) == len(word) {
 		return left, mid, ""
 	}
 
-	// get start of the ending punctuations(at the right)
+	// get start of the ending nonletters(at the right)
 	//
 	iRightStart := iLeftEnd + len(mid)
 	right := word[iRightStart:]
 
 	return left, mid, right
+}
+
+func isNonLetter(ch rune) bool {
+	return !unicode.IsLetter(ch)
 }
