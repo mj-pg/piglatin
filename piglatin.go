@@ -123,7 +123,7 @@ func isValid(word string) bool {
 	return true
 }
 
-// trimPuncs returns the trimmed word and the subsequents punctuations at the start(leftmost) and end(rightmost) of the word.
+// trimPuncts returns the trimmed word and the subsequent punctuations at the start(leftmost) and end(rightmost) of the word.
 func trimPuncts(word string) (string, string, string) {
 	// remove punctuations at the start
 	withoutLeft := strings.TrimLeftFunc(word, unicode.IsPunct)
