@@ -26,7 +26,8 @@ func (s *Service) Translate(text string) (string, error) {
 	}*/
 
 	translated := translate(text)
-	// TODO: should saving forever try
+	// should saving try forever?
+	// no, it is not that important compared to actually giving the translation
 	return translated, s.store.Save(text, translated)
 }
 
@@ -53,20 +54,35 @@ func pigLatinize(word string) string {
 		return ""
 	}
 
-	// word starts with a vowel, just add suffix
-	if isVowel(word[0]) {
-		return withSuffix(word)
-	}
-
-	// word starts with consonant
-	// move starting consonants to the end then add suffix
+	// the rule is
+	// if word starts with vowel then just add suffix ay
+	// else move starting constant/cluster first before adding suffix
+	//
+	// it can be summarized to
+	// 1. move all consonant at the beginning to the end
+	// 2. add suffix
 	//
 	start, remaining := splitStart(word)
 	return withSuffix(remaining + start)
 }
 
+// splitStart splits the starting consonant/s from the rest of the word.
+func splitStart(word string) (string, string) {
+	// split at the 1st vowel
+	i := strings.IndexFunc(word, isVowel)
+	// no vowels
+	if i < 0 {
+		return word, ""
+	}
+	// starts with vowel
+	if i == 0 {
+		return "", word
+	}
+	return word[:i], word[i:]
+}
+
 // isVowel checks if a character is a vowel.
-func isVowel(letter byte) bool {
+func isVowel(letter rune) bool {
 	switch letter {
 	case 'a', 'e', 'i', 'o', 'u',
 		'A', 'E', 'I', 'O', 'U':
@@ -78,16 +94,4 @@ func isVowel(letter byte) bool {
 // withSuffix appends the suffix 'ay' to the word.
 func withSuffix(word string) string {
 	return word + "ay"
-}
-
-// splitStart splits the starting consonant or cluster from the rest of the word.
-func splitStart(word string) (string, string) {
-	var consonants string
-	for i, letter := range word {
-		if isVowel(byte(letter)) {
-			return consonants, word[i:]
-		}
-		consonants = consonants + string(letter)
-	}
-	return consonants, ""
 }
