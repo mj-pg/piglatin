@@ -39,18 +39,19 @@ func NewMySQL(cfg MySQLConfig) (*MySQL, error) {
 }
 
 // Save saves the translation in DB.
-func (m *MySQL) Save(text, pig_latin string) error {
-	_, err := m.Exec("INSERT INTO pig_latin VALUES (?, ?)",
-		text, pig_latin)
+func (m *MySQL) Save(text, translated string) error {
+	query := "INSERT INTO pig_latin(text, translation) VALUES (?, ?)"
+	_, err := m.Exec(query, text, translated)
 	if err != nil {
-		return fmt.Errorf("db save: %w", err)
+		return fmt.Errorf("db insert: %w", err)
 	}
 	return nil
 }
 
 // Get returns all the translations from DB.
 func (m *MySQL) Get() ([][2]string, error) {
-	rows, err := m.Query("select text, translation from pig_latin")
+	query := "SELECT text, translation FROM pig_latin"
+	rows, err := m.Query(query)
 	if err != nil {
 		return nil, fmt.Errorf("db query: %w", err)
 	}
@@ -58,12 +59,12 @@ func (m *MySQL) Get() ([][2]string, error) {
 
 	var ret [][2]string
 	for rows.Next() {
-		var text, transl string
-		err := rows.Scan(&text, &transl)
+		var text, translated string
+		err := rows.Scan(&text, &translated)
 		if err != nil {
 			return nil, fmt.Errorf("db scan: %w", err)
 		}
-		ret = append(ret, [2]string{text, transl})
+		ret = append(ret, [2]string{text, translated})
 	}
 
 	err = rows.Err()
@@ -73,3 +74,16 @@ func (m *MySQL) Get() ([][2]string, error) {
 
 	return ret, nil
 }
+
+/*
+// GetByText returns the saved translation of the text.
+func (mysql *MySQL) GetByText(text string) (string, error) {
+	query := "SELECT translation FROM pig_latin WHERE text = ?"
+	row := mysql.QueryRow(query, text)
+	var translated string
+	if err := row.Scan(&translated); err != nil {
+		return "", fmt.Errorf("db query: %w", err)
+	}
+	return translated, nil
+}
+*/

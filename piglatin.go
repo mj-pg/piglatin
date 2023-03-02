@@ -1,11 +1,14 @@
 package main
 
-import "strings"
+import (
+	"strings"
+)
 
 // Store stores texts and their pig latin translations.
 type Store interface {
 	Save(string, string) error
 	Get() ([][2]string, error)
+	//GetByText(string) (string, error)
 }
 
 // Service represents the core services supported by this pig latin translator.
@@ -15,12 +18,16 @@ type Service struct {
 
 // Translate translates the text to pig latin and saves the translation.
 func (s *Service) Translate(text string) (string, error) {
+
+	/* // already exists
+	if translated, err := s.store.GetByText(text); err == nil {
+		log.Println("Got translation from storage")
+		return translated, nil
+	}*/
+
 	translated := translate(text)
-	// TODO: is this infinite?
-	if err := s.store.Save(text, translated); err != nil {
-		return translated, err
-	}
-	return translated, nil
+	// TODO: should saving forever try
+	return translated, s.store.Save(text, translated)
 }
 
 // List returns all the text and their pig latin translations.
