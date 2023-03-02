@@ -48,18 +48,18 @@ func translate(text string) string {
 	res := make([]string, len(ww))
 	for i, word := range ww {
 
-		pl := pigLatinize(word)
-		res[i] = pl
+		// ignore punctuations at the ends because they may be valid
+		// e.g.  (something less important) ,comma question?
+		//
+		left, mid, right := trimPuncts(word)
+		pl := pigLatinize(mid)
+		res[i] = left + pl + right
 	}
 	return strings.Join(res, " ")
 }
 
 // pigLatinize returns the pig latin version of a word.
 func pigLatinize(word string) string {
-	// word is empty
-	if word == "" {
-		return ""
-	}
 	if !isValid(word) {
 		return word
 	}
@@ -82,8 +82,8 @@ func pigLatinize(word string) string {
 
 // splitStart splits the starting consonant/s from the rest of the word.
 func splitStart(word string) (string, string) {
-	// split at the 1st vowel
-	i := strings.IndexFunc(word, isVowel)
+	// split at the 1st non-consonant
+	i := strings.IndexFunc(word, isNonConsonant)
 	// no vowels
 	if i < 0 {
 		return word, ""
@@ -92,8 +92,8 @@ func splitStart(word string) (string, string) {
 }
 
 // isVowel checks if a character is a vowel.
-func isVowel(letter rune) bool {
-	switch letter {
+func isVowel(ch rune) bool {
+	switch ch {
 	case 'a', 'e', 'i', 'o', 'u',
 		'A', 'E', 'I', 'O', 'U':
 		return true
@@ -101,8 +101,18 @@ func isVowel(letter rune) bool {
 	return false
 }
 
-// isValid checks if a word is probably valid. It allows hyphen and single quote.
+// isNonConsonant checks if a character is not a consonant.
+func isNonConsonant(ch rune) bool {
+	isConsonant := unicode.IsLetter(ch) && !isVowel(ch)
+	return !isConsonant
+}
+
+// isValid checks if a word is probably valid.
+// A valid word has letters, single quote and hyphen only.
 func isValid(word string) bool {
+	if word == "" {
+		return false
+	}
 	for _, ch := range word {
 		if !unicode.IsLetter(ch) &&
 			byte(ch) != '\'' &&
@@ -111,4 +121,35 @@ func isValid(word string) bool {
 		}
 	}
 	return true
+}
+
+// trimPuncs returns the trimmed word and the subsequents punctuations at the start(leftmost) and end(rightmost) of the word.
+func trimPuncts(word string) (string, string, string) {
+	// remove punctuations at the start
+	withoutLeft := strings.TrimLeftFunc(word, unicode.IsPunct)
+
+	// word is all punctuation
+	if withoutLeft == "" {
+		return word, "", ""
+	}
+
+	// remove punctuations at the end
+	mid := strings.TrimRightFunc(withoutLeft, unicode.IsPunct)
+
+	// get starting punctuations(at the left)
+	//
+	iLeftEnd := strings.Index(word, withoutLeft)
+	left := word[:iLeftEnd]
+
+	// zero ending punctuations
+	if len(left)+len(mid) == len(word) {
+		return left, mid, ""
+	}
+
+	// get start of the ending punctuations(at the right)
+	//
+	iRightStart := iLeftEnd + len(mid)
+	right := word[iRightStart:]
+
+	return left, mid, right
 }
