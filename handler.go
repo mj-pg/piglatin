@@ -34,7 +34,7 @@ func (h *Handler) Translate(w http.ResponseWriter, r *http.Request) {
 
 	d := json.NewDecoder(r.Body)
 	if err := d.Decode(&reqBody); err != nil {
-		log.Println("parse request error: %v", err)
+		log.Printf("parse request error: %v", err)
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -50,7 +50,7 @@ func (h *Handler) Translate(w http.ResponseWriter, r *http.Request) {
 	//
 	translated, err := h.svc.Translate(reqBody.Text)
 	if err != nil {
-		log.Println("saving error: %v", err)
+		log.Printf("saving error: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		// do not return, translation itself does not error
 		// just let client know something went wrong
@@ -76,7 +76,7 @@ func (h *Handler) Translate(w http.ResponseWriter, r *http.Request) {
 
 	// respond
 	if _, err := w.Write(respJson); err != nil {
-		log.Println("response failed: %v", err)
+		log.Printf("response failed: %v", err)
 	}
 }
 
@@ -85,7 +85,7 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 
 	list, err := h.svc.List()
 	if err != nil {
-		log.Println("fetching list error: %v", err)
+		log.Printf("fetching list error: %v", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -124,6 +124,6 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 
 	// respond
 	if _, err := w.Write(respJson); err != nil {
-		log.Println("response failed: %v", err)
+		log.Printf("response failed: %v", err)
 	}
 }
