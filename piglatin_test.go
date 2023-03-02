@@ -68,6 +68,10 @@ func TestPigLatinize(t *testing.T) {
 			input: "flu",
 			want:  "uflay",
 		},
+		{
+			input: "12yrs",
+			want:  "12yrs",
+		},
 	}
 
 	for _, tc := range tests {

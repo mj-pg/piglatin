@@ -2,6 +2,7 @@ package main
 
 import (
 	"strings"
+	"unicode"
 )
 
 const (
@@ -65,8 +66,14 @@ func pigLatinize(word string) string {
 	// else move starting constant/cluster first before adding suffix 'ay'
 	//
 
+	// ignore words not starting with a letter
+	first := rune(word[0])
+	if !unicode.IsLetter(first) {
+		return word
+	}
+
 	// word starts with vowel
-	if isVowel(rune(word[0])) {
+	if isVowel(first) {
 		return word + VSUFF
 	}
 
