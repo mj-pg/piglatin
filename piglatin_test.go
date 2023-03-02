@@ -16,8 +16,8 @@ func TestTranslate(t *testing.T) {
 			want:  "oneway otway eethray ourfay",
 		},
 		{
-			input: "Hello World?! I'm a gopher.",
-			want:  "elloHay orldWay?! I'may ay ophergay.",
+			input: "Hello World?! I'm a gopher 4 5yrs. My email: joe@g.com #hashtag",
+			want:  "elloHay orldWay?! I'may ay ophergay 4 5yrs. Myay emailway: joe@g.com #hashtag",
 		},
 	}
 
@@ -71,6 +71,18 @@ func TestPigLatinize(t *testing.T) {
 		{
 			input: "12yrs",
 			want:  "12yrs",
+		},
+		{
+			input: "front$-end",
+			want:  "front$-end",
+		},
+		{
+			input: "front-end",
+			want:  "ont-endfray",
+		},
+		{
+			input: "front's end",
+			want:  "front's end",
 		},
 	}
 

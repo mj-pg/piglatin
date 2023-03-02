@@ -60,19 +60,17 @@ func pigLatinize(word string) string {
 	if word == "" {
 		return ""
 	}
+	if !isValid(word) {
+		return word
+	}
 
 	// the rule is
 	// if word starts with vowel then just add suffix 'way'
 	// else move starting constant/cluster first before adding suffix 'ay'
 	//
 
-	// ignore words not starting with a letter
-	first := rune(word[0])
-	if !unicode.IsLetter(first) {
-		return word
-	}
-
 	// word starts with vowel
+	first := rune(word[0])
 	if isVowel(first) {
 		return word + VSUFF
 	}
@@ -101,4 +99,16 @@ func isVowel(letter rune) bool {
 		return true
 	}
 	return false
+}
+
+// isValid checks if a word is probably valid. It allows hyphen and single quote.
+func isValid(word string) bool {
+	for _, ch := range word {
+		if !unicode.IsLetter(ch) &&
+			byte(ch) != '\'' &&
+			byte(ch) != '-' {
+			return false
+		}
+	}
+	return true
 }
