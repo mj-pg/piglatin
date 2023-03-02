@@ -3,4 +3,4 @@
 
 CREATE DATABASE piglatin;
 CREATE USER 'dbuser'@'localhost' IDENTIFIED BY 'dbp@ss123';
-GRANT ALL PRIVILEGES ON piglatin.* TO 'dbuser'@'localhost' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON piglatin.* TO 'dbuser'@'localhost';
