@@ -5,7 +5,7 @@ import "strings"
 // Store stores texts and their pig latin translations.
 type Store interface {
 	Save(string, string) error
-	Get() ([][]string, error)
+	Get() ([][2]string, error)
 }
 
 // Service represents the core services supported by this pig latin translator.
@@ -24,7 +24,7 @@ func (s *Service) Translate(text string) (string, error) {
 }
 
 // List returns all the text and their pig latin translations.
-func (s *Service) List() ([][]string, error) {
+func (s *Service) List() ([][2]string, error) {
 	return s.store.Get()
 }
 

@@ -49,21 +49,21 @@ func (m *MySQL) Save(text, pig_latin string) error {
 }
 
 // Get returns all the translations from DB.
-func (m *MySQL) Get() ([][]string, error) {
+func (m *MySQL) Get() ([][2]string, error) {
 	rows, err := m.Query("select text, translation from pig_latin")
 	if err != nil {
 		return nil, fmt.Errorf("db query: %w", err)
 	}
 	defer rows.Close()
 
-	var ret [][]string
+	var ret [][2]string
 	for rows.Next() {
 		var text, transl string
 		err := rows.Scan(&text, &transl)
 		if err != nil {
 			return nil, fmt.Errorf("db scan: %w", err)
 		}
-		ret = append(ret, []string{text, transl})
+		ret = append(ret, [2]string{text, transl})
 	}
 
 	err = rows.Err()
