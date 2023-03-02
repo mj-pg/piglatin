@@ -13,8 +13,6 @@ import (
 )
 
 func main() {
-	fmt.Println("vim-go")
-
 	// init config
 	//
 	var cfgFile string
@@ -37,7 +35,8 @@ func main() {
 	h := &Handler{svc}
 	// route
 	http.Handle("/piglatins", h)
-	// start
+
+	log.Println("Pig Latin Translator running..")
 	addr := fmt.Sprintf(":%d", cfg.Server.Port)
 	err = http.ListenAndServe(addr, nil)
 	if err != nil {
