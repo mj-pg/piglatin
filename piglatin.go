@@ -4,6 +4,11 @@ import (
 	"strings"
 )
 
+const (
+	VSUFF = "way"
+	CSUFF = "ay"
+)
+
 // Store stores texts and their pig latin translations.
 type Store interface {
 	Save(string, string) error
@@ -41,6 +46,7 @@ func translate(text string) string {
 	ww := strings.Fields(text)
 	res := make([]string, len(ww))
 	for i, word := range ww {
+
 		pl := pigLatinize(word)
 		res[i] = pl
 	}
@@ -55,15 +61,18 @@ func pigLatinize(word string) string {
 	}
 
 	// the rule is
-	// if word starts with vowel then just add suffix ay
-	// else move starting constant/cluster first before adding suffix
+	// if word starts with vowel then just add suffix 'way'
+	// else move starting constant/cluster first before adding suffix 'ay'
 	//
-	// it can be summarized to
-	// 1. move all consonant at the beginning to the end
-	// 2. add suffix
-	//
+
+	// word starts with vowel
+	if isVowel(rune(word[0])) {
+		return word + VSUFF
+	}
+
+	// word starts with consonant
 	start, remaining := splitStart(word)
-	return withSuffix(remaining + start)
+	return remaining + start + CSUFF
 }
 
 // splitStart splits the starting consonant/s from the rest of the word.
@@ -73,10 +82,6 @@ func splitStart(word string) (string, string) {
 	// no vowels
 	if i < 0 {
 		return word, ""
-	}
-	// starts with vowel
-	if i == 0 {
-		return "", word
 	}
 	return word[:i], word[i:]
 }
@@ -89,9 +94,4 @@ func isVowel(letter rune) bool {
 		return true
 	}
 	return false
-}
-
-// withSuffix appends the suffix 'ay' to the word.
-func withSuffix(word string) string {
-	return word + "ay"
 }

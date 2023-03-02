@@ -13,11 +13,11 @@ func TestTranslate(t *testing.T) {
 	tests := []test{
 		{
 			input: "one two three four",
-			want:  "oneay otway eethray ourfay",
+			want:  "oneway otway eethray ourfay",
 		},
 		{
-			input: "Hello World! I'm a gopher",
-			want:  "elloHay orldWay! I'may ay ophergay",
+			input: "Hello World?! I'm a gopher.",
+			want:  "elloHay orldWay?! I'may ay ophergay.",
 		},
 	}
 
@@ -54,19 +54,19 @@ func TestPigLatinize(t *testing.T) {
 		},
 		{
 			input: "egg",
-			want:  "eggay",
+			want:  "eggway",
 		},
 		{
 			input: "always",
-			want:  "alwaysay",
+			want:  "alwaysway",
 		},
 		{
 			input: "aeiou",
-			want:  "aeiouay",
+			want:  "aeiouway",
 		},
 		{
 			input: "flu",
-			want:  "ufluay",
+			want:  "uflay",
 		},
 	}
 
