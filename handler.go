@@ -22,8 +22,10 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusMethodNotAllowed)
 }
 
+// POST /piglatins
 func (h *Handler) Translate(w http.ResponseWriter, r *http.Request) {
 }
 
+// GET /piglatins
 func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 }
