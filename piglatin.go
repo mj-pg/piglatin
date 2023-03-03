@@ -44,9 +44,9 @@ func (s *Service) List() ([][2]string, error) {
 
 // translate turns each word in the text to its pig latin version.
 func translate(text string) string {
-	ww := strings.Fields(text)
-	res := make([]string, len(ww))
-	for i, word := range ww {
+	words := strings.Fields(text)
+	res := make([]string, len(words))
+	for i, word := range words {
 
 		// ignore nonletters at the ends
 		// since they are not pig latinize
