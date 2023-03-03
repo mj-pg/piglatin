@@ -16,7 +16,7 @@ func main() {
 	// init config
 	//
 	var cfgFile string
-	flag.StringVar(&cfgFile, "cfg", "app.cfg", "config filepath for this service")
+	flag.StringVar(&cfgFile, "cfg", "app.cfg", "config filepath for this app")
 
 	f, err := os.Open(cfgFile)
 	must(err)
