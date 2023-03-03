@@ -69,6 +69,7 @@ func (h *Handler) Translate(w http.ResponseWriter, r *http.Request) {
 	respJson, err := json.Marshal(respBody)
 	// this shouldn't happen
 	if err != nil {
+		log.Printf("format response failed: %v", err)
 		// send raw text
 		w.Write([]byte(translated))
 		return
@@ -114,9 +115,9 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 		translations[i] = t
 	}
 	respJson, err := json.Marshal(translations)
-	_ = respJson
 	// this shouldn't happen
 	if err != nil {
+		log.Printf("format response failed: %v", err)
 		// send output without proper json format
 		fmt.Fprintf(w, "%+v", translations)
 		return
