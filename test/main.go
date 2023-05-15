@@ -1,7 +1,10 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
+	"strings"
 
 	"github.com/mj-pg/piglatin/client"
 )
@@ -20,7 +23,16 @@ func main() {
 
 		switch api {
 		case 1:
-			fmt.Println("Calling Post API")
+			fmt.Println("Input word/s")
+			input, _ := bufio.NewReader(os.Stdin).ReadString('\n')
+			input = strings.TrimSpace(input)
+			fmt.Printf("Calling Post API with input %q\n", input)
+			resp, err := client.Post(input)
+			if err != nil {
+				fmt.Printf("Got error %q", err)
+				continue
+			}
+			fmt.Println("Got response:", resp)
 		case 2:
 			fmt.Println("Calling Get API")
 			resp, err := client.Get()
